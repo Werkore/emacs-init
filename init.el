@@ -56,7 +56,14 @@
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 (global-set-key (kbd "C-.") 'imenu)
-(global-set-key [escape] nil)
+(global-set-key (kbd "C-[") 'start-kbd-macro)
+(global-set-key (kbd "C-]") 'end-kbd-macro)
+(global-set-key (kbd "C-r") 'call-last-kbd-macro)
+(global-set-key (kbd "C-,") 'fill-paragraph)
+(global-set-key (kbd "C-`") 'goto-line)
+(global-set-key (kbd "C-y") 'revert-buffer)
+(global-set-key (kbd "C-l") 'kill-this-buffer)
+;(global-set-key [escape] nil)
 
 ;init package sources
 (require 'package)
@@ -79,6 +86,19 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;;;;;functions;;;;;;
 ;;;;;;;;;;;;;;;;;;;;
+
+(defun wekor-replace-in-region (old-word new-word)
+	"Perform a replace-string in the current region"
+	(interactive "sReplace: \nsReplace : %s With: ")
+	(save-excursion (save-restriction
+									(narrow-to-region (mark) (point))
+									(beginning-of-buffer)
+									(replace-string old-word new-word)
+									))
+)
+(global-set-key (kbd "C-l") 'werkor-replace-in-region)
+(global-set-key (kbd "C-o") 'query-replace)
+
 (defun display-buffer-2-windows (buffer alist)
 	"If only one window is available split it and display BUFFER there.
 	Alist is the only option channel for display actions (see 'dsiplay-buffer')."
@@ -221,11 +241,11 @@
 (use-package magit)
 
 ;forge
-(use-package forge
-     :after magit)
+;(use-package forge
+;     :after magit)
 
 ;set token path
-(setq auth-sources '("~/.authinfo.gpg")) 
+;(setq auth-sources '("~/.authinfo.gpg")) 
 
 ;theme
 ;(set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
