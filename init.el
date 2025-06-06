@@ -1,37 +1,67 @@
+;undo buffer limit
+(setq undo-limit 40000000000)
+(setq undo-strong-limit 400000000)
+ 
+;determine underlying OS
+(setq is-linux (equal system-type 'gnu/Linux))
+(setq is-windows (equal system-type 'windows-nt))
+
+;smooth scroll
+(setq scroll-step 3)
+
+;menu bar mode
+(menu-bar-mode 0)
+
  ;tool bar mode
 (tool-bar-mode 0)
 
 ;scroll bar mode
-(scroll-bar-mode -1)
-
-;window options
-
-(split-window-right)
-(add-to-list 'default-frame-alist '(fullscreen , maximized))
- 
-;line numbers
-(dolist (mode '(org-mode-hook
-		term-mode-hook
-		eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers mode 0))))
-
+(scroll-bar-mode 0)
 
 ;load theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'handmade t)
+(load-theme 'werkor t)
 
+;window options
+(setq next-line-asj-newlines nil)
+(setq-default truncate-lines nil)
+(setq truncate-partial-width-windows nil)
+(setq split-height-threshold nil)
+(setq split-width-threshold 0)
 
-;esc for global prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;line numbers
+(global-display-line-numbers-mode 1)
 
+;line wrapping
+;(global-visual-line-mode 1)
+;(setq word-wrap t)
+;(add-hook 'text-mode-hook #'refill-mode)
+;(add-hook 'prog-mode-hook #'refill-mode)
+;(setq-default fill-column 60) 
+
+;mics packages
+(require 'ido)
+(require 'cc-mode)
+(require 'compile)
+(ido-mode t)
+(require 'cc-mode)
+
+;keybinds
+(global-set-key (kbd "C-e") 'other-window)
+(global-set-key (kbd "M-f") 'find-file)
+(global-set-key (kbd "M-F") 'find-file-other-window)
+;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "M-s") 'werkor-save-buffer)
+(global-set-key (kbd "M-b") 'ido-switch-buffer)
+(global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
+(global-set-key (kbd "M-n") 'next-error)
+(global-set-key (kbd "M-p") 'previous-error)
+(global-set-key (kbd "C-.") 'imenu)
+(global-set-key [escape] nil)
 
 ;init package sources
 (require 'package)
 
-
-
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 
@@ -41,138 +71,173 @@
 
 ;non-linux initialization
 (unless (package-installed-p 'use-package)
-	(package-install 'use-package))
+        (package-install 'use-package))
 
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;rainbow delimiter
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+;;;;;;;;;;;;;;;;;;;;
+;;;;;functions;;;;;;
+;;;;;;;;;;;;;;;;;;;;
+(defun display-buffer-2-windows (buffer alist)
+	"If only one window is available split it and display BUFFER there.
+	Alist is the only option channel for display actions (see 'dsiplay-buffer')."
+	(when (eq (length (window-list nil 'no-minibuf)) 1)
+		(display-buffer--maybe-pop-up-window buffer alist)))
 
-;doom modeline
-(use-package doom-modeline
-  :ensure t
-  :init(doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+(setq display-buffer-base-action
+	'((display-buffer--maybe-same-window
+			display-buffer-reuse-window
+			display-buffer--maybe-pop-up-frame
+			display-buffer-2-windows
+			display-buffer-in-previous-window
+			display-buffer-use-some-window
+			display-buffer-pop-up-frame)))
 
-;doom-themes
-(use-package doom-themes)
+(defun werkor-split-window ()
+	"Dont split windows"
+	nil)
+(setq split-window-preffered-function 'werkor-split-window)
 
-;all-the-icons
-(use-package all-the-icons)
+(defun append-as-kill ()
+	"performs copy-region-as-kill as an append."
+	(interactive)
+	(append-next-kill)
+	(copy-region-as-kill (mark) (point))
+)
+(global-set-key (kbd "C-q") 'append-as-kill)
+(global-set-key (kbd "C-a") 'yank)
+(global-set-key (kbd "C-z") 'kill-region)
+(global-set-key (kbd "C-:") 'view-back-to-mark)
+(global-set-key (kbd "C-;") 'exchange-point-and-mark)
 
-;ivy
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
-	  
 
-;whichkey
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.3))
+;save buffer function
+(defun werkor-save-buffer ()
+        "Save the buffer after untabifying it."
+        (interactive)
+        (save-excursion
+                (save-restriction
+                        (widen)
+                        (untabify (point-min) (point-max))))
+        (save-buffer))
 
-;general
-(use-package general
-  :config
-  (general-create-definer rune/leader-keys
-			  :keymaps '(normal insert visual emacs)
-			  :prefix "SPC"
-			  :global-prefix "C-SPC")
-  (rune/leader-keys
-   "t" '(:ignore t :whiche-key "toggles")))
+;find headerfile (c style only)
+(defun werkor-find-corresponding-file ()
+	"Find the file that corresponds the this one."
+	(interactive)
+	(setq CorrespondingFileName nil)
+	(setq BaseFileName (file-name-sans-extension buffer-file-name))
+	(if (string-match "\\.c" buffer-file-name)
+		(setq CorrespondingFileName (concat BaseFileName ".h")))
+	(if (string-match "\\.h" buffer-file-name)
+		(if (file-exists-p (concat BaseFileName ".c")) (setq CorrespondingFileName (concat BaseFileName ".c"))
+			(setq CorrespondingFileName (concat BaseFileName ".cpp"))))
+	(if (string-match "\\.hin" buffer-file-name)
+		(setq CorrespondingFileName (concat BaseFileName ".cin")))
+	(if (string-match "\\.cin" buffer-file-name)
+		(setq CorrespondingFileName (concat BaseFileName ".hin")))
+	(if (string-match "\\.cpp" buffer-file-name)
+		(setq CorrespondingFileName (concat BaseFileName ".h")))
+	(if CorrespondingFileName (find-file CorrespondingFileName)
+		(error "Unable to find a corresponding file")))
 
-  
-;evil mode
-(defun rune/evil-hook ()
-  (dolist (mode '(custom-mode
-		  eshell-mode
-		  git-rebase-mode
-		  erc-mode
-		  circle-server-mode
-		  circle-chat-mode
-		  circle-query-mode
-		  sauron-mode
-		  term-mode))
-    (add-to-list 'evil-emacs-state-modes mode)))
-		
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  :config
-  (evil-mode 1))
+(defun werkor-find-corresponding-file-other-window ()
+	"Find the file that corresponds to this one.(other window)"
+	(interactive)
+	(find-file-other-window buffer-file-name)
+	(casey-find-corresponding-file)
+	(other-window -1))
+(define-key c-mode-base-map (kbd "C-i") 'werkor-find-corresponding-file)
+(define-key c-mode-base-map (kbd "C-I") 'werkor-find-corresponding-file-other-window)
 
-;evil visual line motions outside of visual mode
-(evil-global-set-key 'motion "j" 'evil-next-visual-line)
-(evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+;compile mode stuff
+(defun compilation-line-hook ()
+        (make-local-variable 'truncate lines)
+        (setq truncate lines nil)
+)
+(add-hook 'compilation-mode-hook 'compilation-line-hook)
 
-(evil-set-initial-state 'messages-buffer-mode 'normal)
-(evil-set-initial-state 'dashboard-mode 'normal)
+;compile stuff
+(setq werkor-makefile "./build.sh")
+(when is-windows
+        (setq werkor-makefile "build.bat")
+)
 
-;evil collection
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
+(defun make-without-asking ()
+        "make the current build"
+        (interactive)
+        (if (find-project-directory) (compile werkor-makefile))
+        (other-window 1)
+ (define-key global-map "M-m" 'make-without-asking)     
+)
 
-;hydra
-(use-package hydra)
+;project directory stuff
+(setq compilation-directory-locked nil)
 
-(use-package hydra)
-(defhydra hydra-text-scale (:timeout 4)
-	  "scale text"
-	  ("j" text-scale-increase "in")
-	  ("k" text-scale-decrease "out")
-	  ("f" nil "finished" :exit t))
-(rune/leader-keys
-  "ts" '(hydra-text-scale/body :which-key "scale-text"))
+(defun find-project-directory-recursive ()
+        "recursively search for a makefile."
+        (interactive)
+        (if (file-exists-p werkor-makefile) t
+                (cd "../")
+                (find-project-directory-recursive)))
 
-;prjectile
-(use-package projectile
-  :diminish projectile-mode
-  :config (projectile-mode)
-  :custom ((projectile-completion-system 'ivy))
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :init
-  (when (file-directory-p "~/projects/code")
-    (setq projectile-project-search-path '(("~projects/code")))
-    (setq projectile-switch-project-action #' projectile-dired)))
+(defun lock-compilation-directory ()
+        "the compilation process should NOT look for a makefile"
+        (interactive)
+        (setq compilation-directory-locked t)
+        (message "Compilation directory is locked"))
 
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
+(defun unlock-compilation-directory ()
+        (interactive)
+        (setq compilation-directory-locked nil)
+        (message "Compilation directory is roaming"))
+
+
+(defun find-project-directory ()
+        "find the project directory"
+        (interactive)
+        (setq find-project-from-directory default directory)
+        (switch-to-buffer-other-window "*compilation")
+        (if compilation-directory-locked (cd last-compilation-directory)
+        (cd find-project-from-directory)
+        (find-project-directory-recursive)
+        (setq last-compilation-directory default-directory)))
+
+;post-loading settings
+(defun post-load-stuff ()
+	(interactive)
+	(split-window-right)
+	(setq split-height-threshold nil)
+	(setq split-width-threshold 0)
+)
+(add-hook'window-setup-hook 'post-load-stuff t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; end functions;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;magit
-(use-package magit
-  :commands (magit-status magit-get-current-branch))
-;  :custom
-;  (magit-display-buffer-function #' magit-display-same-buffer-window-except-diffv1))
+(use-package magit)
+
+;forge
+(use-package forge
+     :after magit)
 
 ;set token path
 (setq auth-sources '("~/.authinfo.gpg")) 
 
-;forge
-(use-package forge)
- 
-;ghub
-(use-package ghub)
+;theme
+;(set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
+;(set face-attribute 'font-lock-comment-face nil :foreground "gray50")
+;(set-face-attribute 'font-lock-constant-face nil :foreground "olive drab")
+;(set-face-attribute 'font-lock-doc-face nil :foreground "gray50")
+;(set-face-attribute 'font-lock-function-name-face nil :foreground "burlywood3")
+;(set-face-attribute 'font-lock-keyword-face nil :forground "DarkGoldenrod3")
+;(set-face-attribute 'font-lock-string-face nil :foreground "olive drab")
+;(set-face-attribute 'font-lock-type-face nil :foreground "burlywood3")
+;(set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -180,7 +245,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558" default))
+   '("79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0" "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558" default))
  '(package-selected-packages '(ivy hydra which-key doom-modeline rainbow-delimiters)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
