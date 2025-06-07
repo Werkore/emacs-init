@@ -46,24 +46,25 @@
 (require 'cc-mode)
 
 ;keybinds
+;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
 (global-set-key (kbd "C-e") 'other-window)
 (global-set-key (kbd "M-f") 'find-file)
 (global-set-key (kbd "M-F") 'find-file-other-window)
-;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "M-s") 'werkor-save-buffer)
 (global-set-key (kbd "M-b") 'ido-switch-buffer)
 (global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 (global-set-key (kbd "C-.") 'imenu)
-(global-set-key (kbd "C-[") 'start-kbd-macro)
-(global-set-key (kbd "C-]") 'end-kbd-macro)
+(global-set-key (kbd "C-<") 'start-kbd-macro)
+(global-set-key (kbd "C->") 'end-kbd-macro)
 (global-set-key (kbd "C-r") 'call-last-kbd-macro)
 (global-set-key (kbd "C-,") 'fill-paragraph)
 (global-set-key (kbd "C-`") 'goto-line)
 (global-set-key (kbd "C-y") 'revert-buffer)
 (global-set-key (kbd "C-l") 'kill-this-buffer)
-;(global-set-key [escape] nil)
+(global-set-key [escape] nil)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;init package sources
 (require 'package)
