@@ -65,12 +65,18 @@
 (global-set-key (kbd "C-l") 'kill-this-buffer)
 (global-set-key [escape] nil)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;(global-set-key (kbd "<Tab>") 'c-indent-line-or-region)
+
+;specific mode bindings
+
+;c-style-modes
+;(define-key c-mode-base-map (kbd "TAB") 'indent-for-tab-command)
 
 ;init package sources
 (require 'package)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+;(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+;                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
 
 (package-initialize)
@@ -78,11 +84,11 @@
   (package-refresh-contents))
 
 ;non-linux initialization
-(unless (package-installed-p 'use-package)
-        (package-install 'use-package))
+;(unless (package-installed-p 'use-package)
+;        (package-install 'use-package))
 
-(require 'use-package)
-(setq use-package-always-ensure t)
+;(require 'use-package)
+;(setq use-package-always-ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;;;;functions;;;;;;
@@ -167,7 +173,7 @@
 	"Find the file that corresponds to this one.(other window)"
 	(interactive)
 	(find-file-other-window buffer-file-name)
-	(casey-find-corresponding-file)
+	(werkor-find-corresponding-file)
 	(other-window -1))
 (define-key c-mode-base-map (kbd "C-i") 'werkor-find-corresponding-file)
 (define-key c-mode-base-map (kbd "C-I") 'werkor-find-corresponding-file-other-window)
@@ -239,7 +245,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;magit
-(use-package magit)
+;(use-package magit)
 
 ;forge
 ;(use-package forge
@@ -266,8 +272,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0" "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558" default))
- '(package-selected-packages '(ivy hydra which-key doom-modeline rainbow-delimiters)))
+   '("79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0"
+     "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558"
+     default))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
