@@ -6,6 +6,9 @@
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
 
+;disable the bell
+(setq ring-bell-function 'ignore)
+
 ;smooth scroll
 (setq scroll-step 3)
 
@@ -20,6 +23,10 @@
 
 ;load theme
 (load-theme 'werkor t)
+
+;show paren-mode
+(show-paren-mode -1)
+;(setq show-paren-style 'parenthesis)
 
 ;window options
 (setq next-line-asj-newlines nil)
@@ -53,8 +60,8 @@
 (global-set-key (kbd "M-s") 'werkor-save-buffer)
 (global-set-key (kbd "M-b") 'ido-switch-buffer)
 (global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
-(global-set-key (kbd "M-n") 'next-error)
-(global-set-key (kbd "M-p") 'previous-error)
+;(global-set-key (kbd "M-n") 'next-error)
+;(global-set-key (kbd "M-p") 'previous-error)
 (global-set-key (kbd "C-.") 'imenu)
 (global-set-key (kbd "C-<") 'start-kbd-macro)
 (global-set-key (kbd "C->") 'end-kbd-macro)
@@ -65,12 +72,12 @@
 (global-set-key (kbd "C-l") 'kill-this-buffer)
 (global-set-key [escape] nil)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-;(global-set-key (kbd "<Tab>") 'c-indent-line-or-region)
+;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
 
 ;specific mode bindings
 
 ;c-style-modes
-;(define-key c-mode-base-map (kbd "TAB") 'indent-for-tab-command)
+;(define-key c-mode-base-map (kbd "<tab>") 'c-indent-line-or-region)
 
 ;init package sources
 (require 'package)
@@ -175,8 +182,8 @@
 	(find-file-other-window buffer-file-name)
 	(werkor-find-corresponding-file)
 	(other-window -1))
-(define-key c-mode-base-map (kbd "C-i") 'werkor-find-corresponding-file)
-(define-key c-mode-base-map (kbd "C-I") 'werkor-find-corresponding-file-other-window)
+(define-key c-mode-base-map (kbd "M-I") 'werkor-find-corresponding-file)
+(define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
 ;compile mode stuff
 (defun compilation-line-hook ()
@@ -186,7 +193,7 @@
 (add-hook 'compilation-mode-hook 'compilation-line-hook)
 
 ;compile stuff
-(setq werkor-makefile "./build.sh")
+(setq werkor-makefile "build.sh")
 (when is-windows
         (setq werkor-makefile "build.bat")
 )
@@ -196,7 +203,7 @@
         (interactive)
         (if (find-project-directory) (compile werkor-makefile))
         (other-window 1)
- (define-key global-map "M-m" 'make-without-asking)     
+ (global-set-key (kbd "M-m") 'make-without-asking)     
 )
 
 ;project directory stuff
@@ -207,7 +214,9 @@
         (interactive)
         (if (file-exists-p werkor-makefile) t
                 (cd "../")
-                (find-project-directory-recursive)))
+		(setq my-current-directory default-directory)
+		(message "The Current working directory is: %s" default-directory)
+                (find-project-directory-reursive)))
 
 (defun lock-compilation-directory ()
         "the compilation process should NOT look for a makefile"
