@@ -2,16 +2,18 @@
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
-;change font
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-
 ;make cursor a box
 (setq cursor-type 'box)
+
 ;make cursor on windows be a block 
 (setq w32-use-visible-system-caret nil)
+
 ;determine underlying OS
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
+
+;change font
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
 
 ;disable the bell
 (setq ring-bell-function 'ignore)
