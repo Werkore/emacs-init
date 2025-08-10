@@ -3,7 +3,7 @@
 (setq undo-strong-limit 400000000)
 
 ;change font
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono-10"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono-Regular-10"))
 
 ;make cursor a box
 (setq cursor-type 'box)
