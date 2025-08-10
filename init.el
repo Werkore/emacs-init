@@ -1,7 +1,9 @@
 ;undo buffer limit
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
- 
+
+;make cursor on windows be a block 
+(setq w32-use-visible-system-caret nil)
 ;determine underlying OS
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
