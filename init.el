@@ -2,6 +2,9 @@
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
+;change font
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono-10"))
+
 ;make cursor a box
 (setq cursor-type 'box)
 ;make cursor on windows be a block 
