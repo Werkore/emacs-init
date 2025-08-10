@@ -2,6 +2,8 @@
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
+;make cursor a box
+(setq cursor-type 'box)
 ;make cursor on windows be a block 
 (setq w32-use-visible-system-caret nil)
 ;determine underlying OS
