@@ -13,7 +13,7 @@
 (setq is-windows (equal system-type 'windows-nt))
 
 ;change font
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10")))
 
 ;disable the bell
 (setq ring-bell-function 'ignore)
