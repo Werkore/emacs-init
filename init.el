@@ -21,6 +21,8 @@
 ;smooth scroll
 (setq scroll-step 3)
 
+;set global hl line mode
+(global-hl-line-mode 1)
 ;menu bar mode
 (menu-bar-mode 0)
 
@@ -273,16 +275,16 @@
 ;(setq auth-sources '("~/.authinfo.gpg")) 
 
 ;theme
-;(set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
-;(set face-attribute 'font-lock-comment-face nil :foreground "gray50")
-;(set-face-attribute 'font-lock-constant-face nil :foreground "olive drab")
-;(set-face-attribute 'font-lock-doc-face nil :foreground "gray50")
-;(set-face-attribute 'font-lock-function-name-face nil :foreground "burlywood3")
-;(set-face-attribute 'font-lock-keyword-face nil :forground "DarkGoldenrod3")
-;(set-face-attribute 'font-lock-string-face nil :foreground "olive drab")
-;(set-face-attribute 'font-lock-type-face nil :foreground "burlywood3")
-;(set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
-
+(set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
+(set-face-attribute 'font-lock-comment-face nil :foreground "gray50")
+(set-face-attribute 'font-lock-constant-face nil :foreground "olive drab")
+(set-face-attribute 'font-lock-doc-face nil :foreground "gray50")
+(set-face-attribute 'font-lock-function-name-face nil :foreground "burlywood3")
+(set-face-attribute 'font-lock-keyword-face nil :foreground "DarkGoldenrod3")
+(set-face-attribute 'font-lock-string-face nil :foreground "olive drab")
+(set-face-attribute 'font-lock-type-face nil :foreground "burlywood3")
+(set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
+(set-face-attribute 'hl-line nil :inherit nil :background "#191970")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -290,7 +292,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0"
+   '("580631e92415511bd87dc76004a3324cf87b5494405e1d7531f2bf8956415818"
+     "c20e1d2424f3f871ef008d81f1ea51fd29aa3c599024c60166a7298fe7029739"
+     "33e143792a67fcdeb653bc14923869dd4f588945465730bb7451c0a32628097e"
+     "6abb07919e1b8fe5081c7deb7f88aab86c8d71adc49b8d4f97291553974d7acd"
+     "79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0"
      "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558"
      default))
  '(package-selected-packages nil))
@@ -299,5 +305,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+; '(hl-line ((t (:background "midnight blue")))))
  
