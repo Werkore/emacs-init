@@ -6,14 +6,15 @@
 (setq cursor-type 'box)
 
 ;make cursor on windows be a block 
-(setq w32-use-visible-system-caret nil)
+;(setq w32-use-visible-system-caret nil)
 
 ;determine underlying OS
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
 
 ;change font
-(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10")))
+(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+                                                                                  (setq w32-use-visible-system-caret nil) )
 
 ;disable the bell
 (setq ring-bell-function 'ignore)
@@ -116,11 +117,10 @@
 	"Perform a replace-string in the current region"
 	(interactive "sReplace: \nsReplace : %s With: ")
 	(save-excursion (save-restriction
-									(narrow-to-region (mark) (point))
-									(beginning-of-buffer)
-									(replace-string old-word new-word)
-									))
-)
+	(narrow-to-region (mark) (point))
+	(beginning-of-buffer)
+        (replace-string old-word new-word))))
+
 (global-set-key (kbd "C-l") 'werkor-replace-in-region)
 (global-set-key (kbd "C-o") 'query-replace)
 
@@ -148,8 +148,8 @@
 	"performs copy-region-as-kill as an append."
 	(interactive)
 	(append-next-kill)
-	(copy-region-as-kill (mark) (point))
-)
+	(copy-region-as-kill (mark) (point)))
+
 (global-set-key (kbd "C-q") 'append-as-kill)
 (global-set-key (kbd "C-a") 'yank)
 (global-set-key (kbd "C-z") 'kill-region)
@@ -245,7 +245,7 @@
         "find the project directory"
         (interactive)
         (setq find-project-from-directory default directory)
-        (switch-to-buffer-other-window "*compilation")
+        (switch-to-buffer-other-window "*compilation*")
         (if compilation-directory-locked (cd last-compilation-directory)
         (cd find-project-from-directory)
         (find-project-directory-recursive)
@@ -260,19 +260,28 @@
 )
 (add-hook'window-setup-hook 'post-load-stuff t)
 
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; end functions;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;magit
-;(use-package magit)
+;;;Modal-mode-----------------------------------------------------
+;(define-minor-mode werkor-modal-mode
+;   "werkor's  modal mode"
+;   :lighter " [Modal]"
+;   ;:keymap my-modal-keymap
+;   (if werkor-modal-mode
+;       (setq cursor-type 'bar)
+;     else (setq cursor-type 'box)))
+; 
+;(global-set-key (kbd "`") 'werkor-modal-mode)
+;
+;   (defvar my-modal-keymap (make-sparse-keymap))
+;     (define-key my-modal-keymap (kbd "f") 'find-file)
+     
 
-;forge
-;(use-package forge
-;     :after magit)
-
-;set token path
-;(setq auth-sources '("~/.authinfo.gpg")) 
 
 ;theme
 (set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
@@ -305,5 +314,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-; '(hl-line ((t (:background "midnight blue")))))
+)
  
