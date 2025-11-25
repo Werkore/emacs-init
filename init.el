@@ -274,7 +274,7 @@
 (define-minor-mode werkor-modal-mode
       "werkore modal mode."
       :lighter " [MODAL]"
-      :keymap   '((kbd "M-`" 'werkor-modal-mode))
+      :keymap   '((kbd "M-`" . werkor-modal-mode))
       (if werkor-modal-mode
           (set-face-attribute 'cursor nil :background "red")
         (set-face-attribute 'cursor nil :background "green")))
