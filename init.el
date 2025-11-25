@@ -63,6 +63,9 @@
 (require 'compile)
 (ido-mode t)
 (require 'cc-mode)
+(require 'project)
+
+(setq project-vc-extra-root-markers '("build.sh" "build.bat"))
 
 ;keybinds
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
@@ -268,22 +271,48 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;Modal-mode-----------------------------------------------------
-;(define-minor-mode werkor-modal-mode
-;   "werkor's  modal mode"
-;   :lighter " [Modal]"
-;   ;:keymap my-modal-keymap
-;   (if werkor-modal-mode
-;       (setq cursor-type 'bar)
-;     else (setq cursor-type 'box)))
-; 
-;(global-set-key (kbd "`") 'werkor-modal-mode)
-;
-;   (defvar my-modal-keymap (make-sparse-keymap))
-;     (define-key my-modal-keymap (kbd "f") 'find-file)
-     
+(define-minor-mode werkor-modal-mode
+      "werkore modal mode."
+      :lighter " [MODAL]"
+      :keymap   '((kbd "M-`" 'werkor-modal-mode))
+      (if werkor-modal-mode
+          (set-face-attribute 'cursor nil :background "red")
+        (set-face-attribute 'cursor nil :background "green")))
+
+(add-hook 'prog-mode-hook 'werkor-modal-mode)
+(add-hook 'text-mode-hook 'werkor-modal-mode)
 
 
-;theme
+;;;highlights-----------------------------------------------------------
+(defface my-todo-face
+  '((t (:foreground "red" :weight bold)))
+  "face for todo.")
+
+(defface my-note-face
+  '((t (:foreground "green" :weight bold)))
+  "face for note.")
+
+(defface my-important-face
+  '((t (:foreground "yellow" :weight bold)))
+  "face for important.")
+
+(defface my-study-face
+  '((t (:foreground "blue" :weight bold)))
+  "face for study.")
+
+(defun my-highlight-keywords-hook ()
+  "add custom keywords to font-lock-keywords."
+  (font-lock-add-keywords nil '(
+				("\\<TODO\\>" 0 'my-todo-face t)
+				("\\<NOTE\\>" 0 'my-note-face t)
+				("\\<IMPORTANT\\>" 0 'my-important-face t)
+				("\\<STUDY\\>" 0 'my-study-face t)
+				)))
+
+(add-hook 'prog-mode-hook 'my-highlight-keywords-hook)
+(add-hook 'text-mode-hook 'my-highlight-keywords-hook)
+
+;;;theme---------------------------------------------------------------------
 (set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
 (set-face-attribute 'font-lock-comment-face nil :foreground "gray50")
 (set-face-attribute 'font-lock-constant-face nil :foreground "olive drab")
