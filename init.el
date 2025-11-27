@@ -271,16 +271,33 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;Modal-mode-----------------------------------------------------
+(defvar werkor-modal-mode-map
+  (let ((map (make-sparse-keymap)))
+    ;;bindings go here
+    (define-key werkor-modal-mode-map (kbd "n") 'next-line)
+    (define-key werkor-modal-mode-map (kbd "p") 'previous-line)
+    (define-key werkor-modal-mode-map (kbd "f") 'forward-char)
+    (define-key werkor-modal-mode-map (kbd "b") 'backward-char)
+    (define-key werkor-modal-mode-map (kbd "a") 'yank)
+    (define-key werkor-modal-mode-map (kbd "s") 'save-some-buffers)
+    (define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
+    (define-key werkor-modal-mode-map (kbd "i") 'isearch-forward)
+    (definekey werkor-modal-mode-map (kbd "o") 'query-replace)
+    map)
+  "keymap for modal mode.")
+
 (define-minor-mode werkor-modal-mode
       "werkore modal mode."
+      nil
       :lighter " [MODAL]"
-      :keymap   '((kbd "M-`" . werkor-modal-mode))
+      :keymap werkor-modal-mode-map
       (if werkor-modal-mode
           (set-face-attribute 'cursor nil :background "red")
         (set-face-attribute 'cursor nil :background "green")))
 
-(add-hook 'prog-mode-hook 'werkor-modal-mode)
-(add-hook 'text-mode-hook 'werkor-modal-mode)
+(global-set-key (kbd "M-ESC") 'werkor-modal-mode)
+;(add-hook 'prog-mode-hook 'werkor-modal-mode)
+;(add-hook 'text-mode-hook 'werkor-modal-mode)
 
 
 ;;;highlights-----------------------------------------------------------
