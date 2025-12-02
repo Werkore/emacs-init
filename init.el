@@ -62,8 +62,6 @@
 (require 'cc-mode)
 (require 'compile)
 (ido-mode t)
-(require 'cc-mode)
-(require 'project)
 
 (setq project-vc-extra-root-markers '("build.sh" "build.bat"))
 
@@ -94,8 +92,6 @@
 ;c-style-modes
 ;(define-key c-mode-base-map (kbd "<tab>") 'c-indent-line-or-region)
 
-;init package sources
-(require 'package)
 
 ;(setq package-archives '(("melpa" . "https://melpa.org/packages/")
 ;                         ("elpa" . "https://elpa.gnu.org/packages/")))
