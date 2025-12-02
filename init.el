@@ -286,14 +286,14 @@
 (define-key werkor-modal-mode-map (kbd "o") 'query-replace)
 
 (define-minor-mode werkor-modal-mode
-      "werkore modal mode."
-      :lighter " [MODAL]"
-      :keymap werkor-modal-mode-map
-      (if werkor-modal-mode
-          (set-face-attribute 'cursor nil :background "red")
-        (set-face-attribute 'cursor nil :background "green")))
+  "werkore modal mode."
+  :lighter " [MODAL]"
+  :keymap werkor-modal-mode-map
+  (if werkor-modal-mode
+      (set-face-attribute 'cursor nil :background "red")
+    (set-face-attribute 'cursor nil :background "green")))
 
-(global-set-key (kbd "M-ESC") 'werkor-modal-mode)
+(global-set-key (kbd "M-,") 'werkor-modal-mode)
 ;(add-hook 'prog-mode-hook 'werkor-modal-mode)
 ;(add-hook 'text-mode-hook 'werkor-modal-mode)
 
