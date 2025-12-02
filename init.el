@@ -117,41 +117,41 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defun wekor-replace-in-region (old-word new-word)
-	"Perform a replace-string in the current region"
-	(interactive "sReplace: \nsReplace : %s With: ")
-	(save-excursion (save-restriction
-	(narrow-to-region (mark) (point))
-	(beginning-of-buffer)
+        "Perform a replace-string in the current region"
+        (interactive "sReplace: \nsReplace : %s With: ")
+        (save-excursion (save-restriction
+        (narrow-to-region (mark) (point))
+        (beginning-of-buffer)
         (replace-string old-word new-word))))
 
 (global-set-key (kbd "C-l") 'werkor-replace-in-region)
 (global-set-key (kbd "C-o") 'query-replace)
 
 (defun display-buffer-2-windows (buffer alist)
-	"If only one window is available split it and display BUFFER there.
-	Alist is the only option channel for display actions (see 'dsiplay-buffer')."
-	(when (eq (length (window-list nil 'no-minibuf)) 1)
-		(display-buffer--maybe-pop-up-window buffer alist)))
+        "If only one window is available split it and display BUFFER there.
+        Alist is the only option channel for display actions (see 'dsiplay-buffer')."
+        (when (eq (length (window-list nil 'no-minibuf)) 1)
+                (display-buffer--maybe-pop-up-window buffer alist)))
 
 (setq display-buffer-base-action
-	'((display-buffer--maybe-same-window
-			display-buffer-reuse-window
-			display-buffer--maybe-pop-up-frame
-			display-buffer-2-windows
-			display-buffer-in-previous-window
-			display-buffer-use-some-window
-			display-buffer-pop-up-frame)))
+        '((display-buffer--maybe-same-window
+                        display-buffer-reuse-window
+                        display-buffer--maybe-pop-up-frame
+                        display-buffer-2-windows
+                        display-buffer-in-previous-window
+                        display-buffer-use-some-window
+                        display-buffer-pop-up-frame)))
 
 (defun werkor-split-window ()
-	"Dont split windows"
-	nil)
+        "Dont split windows"
+        nil)
 (setq split-window-preffered-function 'werkor-split-window)
 
 (defun append-as-kill ()
-	"performs copy-region-as-kill as an append."
-	(interactive)
-	(append-next-kill)
-	(copy-region-as-kill (mark) (point)))
+        "performs copy-region-as-kill as an append."
+        (interactive)
+        (append-next-kill)
+        (copy-region-as-kill (mark) (point)))
 
 (global-set-key (kbd "C-q") 'append-as-kill)
 (global-set-key (kbd "C-a") 'yank)
@@ -172,30 +172,30 @@
 
 ;find headerfile (c style only)
 (defun werkor-find-corresponding-file ()
-	"Find the file that corresponds the this one."
-	(interactive)
-	(setq CorrespondingFileName nil)
-	(setq BaseFileName (file-name-sans-extension buffer-file-name))
-	(if (string-match "\\.c" buffer-file-name)
-		(setq CorrespondingFileName (concat BaseFileName ".h")))
-	(if (string-match "\\.h" buffer-file-name)
-		(if (file-exists-p (concat BaseFileName ".c")) (setq CorrespondingFileName (concat BaseFileName ".c"))
-			(setq CorrespondingFileName (concat BaseFileName ".cpp"))))
-	(if (string-match "\\.hin" buffer-file-name)
-		(setq CorrespondingFileName (concat BaseFileName ".cin")))
-	(if (string-match "\\.cin" buffer-file-name)
-		(setq CorrespondingFileName (concat BaseFileName ".hin")))
-	(if (string-match "\\.cpp" buffer-file-name)
-		(setq CorrespondingFileName (concat BaseFileName ".h")))
-	(if CorrespondingFileName (find-file CorrespondingFileName)
-		(error "Unable to find a corresponding file")))
+        "Find the file that corresponds the this one."
+        (interactive)
+        (setq CorrespondingFileName nil)
+        (setq BaseFileName (file-name-sans-extension buffer-file-name))
+        (if (string-match "\\.c" buffer-file-name)
+                (setq CorrespondingFileName (concat BaseFileName ".h")))
+        (if (string-match "\\.h" buffer-file-name)
+                (if (file-exists-p (concat BaseFileName ".c")) (setq CorrespondingFileName (concat BaseFileName ".c"))
+                        (setq CorrespondingFileName (concat BaseFileName ".cpp"))))
+        (if (string-match "\\.hin" buffer-file-name)
+                (setq CorrespondingFileName (concat BaseFileName ".cin")))
+        (if (string-match "\\.cin" buffer-file-name)
+                (setq CorrespondingFileName (concat BaseFileName ".hin")))
+        (if (string-match "\\.cpp" buffer-file-name)
+                (setq CorrespondingFileName (concat BaseFileName ".h")))
+        (if CorrespondingFileName (find-file CorrespondingFileName)
+                (error "Unable to find a corresponding file")))
 
 (defun werkor-find-corresponding-file-other-window ()
-	"Find the file that corresponds to this one.(other window)"
-	(interactive)
-	(find-file-other-window buffer-file-name)
-	(werkor-find-corresponding-file)
-	(other-window -1))
+        "Find the file that corresponds to this one.(other window)"
+        (interactive)
+        (find-file-other-window buffer-file-name)
+        (werkor-find-corresponding-file)
+        (other-window -1))
 (define-key c-mode-base-map (kbd "M-I") 'werkor-find-corresponding-file)
 (define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
@@ -228,8 +228,8 @@
         (interactive)
         (if (file-exists-p werkor-makefile) t
                 (cd "../")
-		(setq my-current-directory default-directory)
-		(message "The Current working directory is: %s" default-directory)
+                (setq my-current-directory default-directory)
+                (message "The Current working directory is: %s" default-directory)
                 (find-project-directory-reursive)))
 
 (defun lock-compilation-directory ()
@@ -256,10 +256,10 @@
 
 ;post-loading settings
 (defun post-load-stuff ()
-	(interactive)
-	(split-window-right)
-	(setq split-height-threshold nil)
-	(setq split-width-threshold 0)
+        (interactive)
+        (split-window-right)
+        (setq split-height-threshold nil)
+        (setq split-width-threshold 0)
 )
 (add-hook'window-setup-hook 'post-load-stuff t)
 
@@ -271,24 +271,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;Modal-mode-----------------------------------------------------
-(defvar werkor-modal-mode-map
-  (let ((map (make-sparse-keymap)))
-    ;;bindings go here
-    (define-key werkor-modal-mode-map (kbd "n") 'next-line)
-    (define-key werkor-modal-mode-map (kbd "p") 'previous-line)
-    (define-key werkor-modal-mode-map (kbd "f") 'forward-char)
-    (define-key werkor-modal-mode-map (kbd "b") 'backward-char)
-    (define-key werkor-modal-mode-map (kbd "a") 'yank)
-    (define-key werkor-modal-mode-map (kbd "s") 'save-some-buffers)
-    (define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
-    (define-key werkor-modal-mode-map (kbd "i") 'isearch-forward)
-    (definekey werkor-modal-mode-map (kbd "o") 'query-replace)
-    map)
+(defvar werkor-modal-mode-map (make-sparse-keymap)
   "keymap for modal mode.")
+
+;;bindings go here
+(define-key werkor-modal-mode-map (kbd "n") 'next-line)
+(define-key werkor-modal-mode-map (kbd "p") 'previous-line)
+(define-key werkor-modal-mode-map (kbd "f") 'forward-char)
+(define-key werkor-modal-mode-map (kbd "b") 'backward-char)
+(define-key werkor-modal-mode-map (kbd "a") 'yank)
+(define-key werkor-modal-mode-map (kbd "s") 'save-some-buffers)
+(define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
+(define-key werkor-modal-mode-map (kbd "i") 'isearch-forward)
+(define-key werkor-modal-mode-map (kbd "o") 'query-replace)
 
 (define-minor-mode werkor-modal-mode
       "werkore modal mode."
-      nil
       :lighter " [MODAL]"
       :keymap werkor-modal-mode-map
       (if werkor-modal-mode
@@ -320,11 +318,11 @@
 (defun my-highlight-keywords-hook ()
   "add custom keywords to font-lock-keywords."
   (font-lock-add-keywords nil '(
-				("\\<TODO\\>" 0 'my-todo-face t)
-				("\\<NOTE\\>" 0 'my-note-face t)
-				("\\<IMPORTANT\\>" 0 'my-important-face t)
-				("\\<STUDY\\>" 0 'my-study-face t)
-				)))
+                                ("\\<TODO\\>" 0 'my-todo-face t)
+                                ("\\<NOTE\\>" 0 'my-note-face t)
+                                ("\\<IMPORTANT\\>" 0 'my-important-face t)
+                                ("\\<STUDY\\>" 0 'my-study-face t)
+                                )))
 
 (add-hook 'prog-mode-hook 'my-highlight-keywords-hook)
 (add-hook 'text-mode-hook 'my-highlight-keywords-hook)
