@@ -14,7 +14,7 @@
 
 ;change font
 (when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-                                                                                  (setq w32-use-visible-system-caret nil) )
+  (setq w32-use-visible-system-caret nil) )
 
 ;disable the bell
 (setq ring-bell-function 'ignore)
@@ -62,6 +62,7 @@
 (require 'cc-mode)
 (require 'compile)
 (ido-mode t)
+(require 'project)
 
 (setq project-vc-extra-root-markers '("build.sh" "build.bat"))
 
@@ -211,7 +212,7 @@
 (defun make-without-asking ()
         "make the current build"
         (interactive)
-        (if (find-project-directory) (compile werkor-makefile))
+        (if (werkor-find-project-directory) (compile werkor-makefile))
         (other-window 1)
  (global-set-key (kbd "M-m") 'make-without-asking)     
 )
@@ -219,14 +220,14 @@
 ;project directory stuff
 (setq compilation-directory-locked nil)
 
-(defun find-project-directory-recursive ()
+(defun werkor-find-project-directory-recursive ()
         "recursively search for a makefile."
         (interactive)
         (if (file-exists-p werkor-makefile) t
                 (cd "../")
                 (setq my-current-directory default-directory)
                 (message "The Current working directory is: %s" default-directory)
-                (find-project-directory-reursive)))
+                (werkor-find-project-directory-reursive)))
 
 (defun lock-compilation-directory ()
         "the compilation process should NOT look for a makefile"
@@ -240,14 +241,14 @@
         (message "Compilation directory is roaming"))
 
 
-(defun find-project-directory ()
+(defun werkor-find-project-directory ()
         "find the project directory"
         (interactive)
-        (setq find-project-from-directory default directory)
+        (setq werkor-find-project-from-directory default directory)
         (switch-to-buffer-other-window "*compilation*")
         (if compilation-directory-locked (cd last-compilation-directory)
         (cd find-project-from-directory)
-        (find-project-directory-recursive)
+        (werkor-find-project-directory-recursive)
         (setq last-compilation-directory default-directory)))
 
 ;post-loading settings
@@ -280,6 +281,8 @@
 (define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
 (define-key werkor-modal-mode-map (kbd "i") 'isearch-forward)
 (define-key werkor-modal-mode-map (kbd "o") 'query-replace)
+(define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
+(define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
 
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
