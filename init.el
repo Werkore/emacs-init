@@ -284,10 +284,12 @@
 (define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
 (define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
 
+
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
   :lighter " [MODAL]"
   :keymap werkor-modal-mode-map
+  :global t
   (if werkor-modal-mode
       (set-face-attribute 'cursor nil :background "red")
     (set-face-attribute 'cursor nil :background "green")))
