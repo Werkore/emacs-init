@@ -46,6 +46,7 @@
 (setq truncate-partial-width-windows nil)
 (setq split-height-threshold nil)
 (setq split-width-threshold 0)
+(add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 ;line numbers
 (global-display-line-numbers-mode 1)
