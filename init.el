@@ -40,7 +40,7 @@
 (scroll-bar-mode 0)
 
 ;;;load theme
-;(load-theme 'werkor t)
+(load-theme 'werkor t)
 
 ;;;show paren-mode
 (show-paren-mode 1)
