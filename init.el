@@ -1,46 +1,52 @@
-;undo buffer limit
+;;;undo buffer limit
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
-;make cursor a box
+;;;make cursor a box
 (setq cursor-type 'box)
 
-;make cursor on windows be a block 
+;;;make cursor on windows be a block 
 ;(setq w32-use-visible-system-caret nil)
 
-;determine underlying OS
+;;;determine underlying OS
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
 
-;change font
+;;;change font
 (when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-  (setq w32-use-visible-system-caret nil) )
+  (setq w32-use-visible-system-caret nil))
 
-;disable the bell
+(when is-linux (add-to-list 'default-fram-alist '(font . ""))
+
+;;;disable the bell
 (setq ring-bell-function 'ignore)
 
-;smooth scroll
+;;;smooth scroll
 (setq scroll-step 3)
 
-;set global hl line mode
+;;;set global hl line mode
 (global-hl-line-mode 1)
-;menu bar mode
+
+;;;menu bar mode
 (menu-bar-mode 0)
 
- ;tool bar mode
+;;;grep command
+(setq grep-command "rgrep -nH") 
+
+;;;tool bar mode
 (tool-bar-mode 0)
 
-;scroll bar mode
+;;;scroll bar mode
 (scroll-bar-mode 0)
 
-;load theme
-(load-theme 'werkor t)
+;;;load theme
+;(load-theme 'werkor t)
 
-;show paren-mode
-(show-paren-mode -1)
+;;;show paren-mode
+(show-paren-mode 1)
 ;(setq show-paren-style 'parenthesis)
 
-;window options
+;;;window options
 (setq next-line-asj-newlines nil)
 (setq-default truncate-lines nil)
 (setq truncate-partial-width-windows nil)
@@ -48,31 +54,33 @@
 (setq split-width-threshold 0)
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
-;line numbers
+;;;line numbers
 (global-display-line-numbers-mode 1)
 
-;line wrapping
+;;;line wrapping
 ;(global-visual-line-mode 1)
 ;(setq word-wrap t)
 ;(add-hook 'text-mode-hook #'refill-mode)
 ;(add-hook 'prog-mode-hook #'refill-mode)
 ;(setq-default fill-column 60) 
 
-;mics packages
+;;;mics packages
 (require 'ido)
+(require 'ido-complete)
 (require 'cc-mode)
 (require 'compile)
 (ido-mode t)
 (require 'project)
 
-(setq project-vc-extra-root-markers '("build.sh" "build.bat"))
+;;;project markers for root
+(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".project.el"))
 
-;keybinds
+;;;keybinds
+
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
 (global-set-key (kbd "C-e") 'other-window)
 (global-set-key (kbd "M-f") 'find-file)
 (global-set-key (kbd "M-F") 'find-file-other-window)
-(global-set-key (kbd "M-s") 'werkor-save-buffer)
 (global-set-key (kbd "M-b") 'ido-switch-buffer)
 (global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
 ;(global-set-key (kbd "M-n") 'next-error)
@@ -88,32 +96,22 @@
 (global-set-key [escape] nil)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
+(global-set-key (kbd "M-m") 'recompile)
+(global-set-key (kbd "M-c") 'werkor-add-comment)
 
-;specific mode bindings
+;;;functions--------------------------------------------
 
-;c-style-modes
-;(define-key c-mode-base-map (kbd "<tab>") 'c-indent-line-or-region)
+;;;add Comment--------------------------------
 
+(defun werkor-add-comment ()
+  "insert a divider comment at the cursor"
+  (interactive)
+  (insert comment-start)
+  (insert " -----------------------------------------------------------")
+  (insert comment-end)
+  (backward-whitespace))
 
-;(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-;                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-;non-linux initialization
-;(unless (package-installed-p 'use-package)
-;        (package-install 'use-package))
-
-;(require 'use-package)
-;(setq use-package-always-ensure t)
-
-;;;;;;;;;;;;;;;;;;;;
-;;;;;functions;;;;;;
-;;;;;;;;;;;;;;;;;;;;
-
+;;;replace-in-region
 (defun wekor-replace-in-region (old-word new-word)
         "Perform a replace-string in the current region"
         (interactive "sReplace: \nsReplace : %s With: ")
@@ -158,7 +156,7 @@
 (global-set-key (kbd "C-;") 'exchange-point-and-mark)
 
 
-;save buffer function
+;;;save buffer function
 (defun werkor-save-buffer ()
         "Save the buffer after untabifying it."
         (interactive)
@@ -168,7 +166,7 @@
                         (untabify (point-min) (point-max))))
         (save-buffer))
 
-;find headerfile (c style only)
+;;;find headerfile (c style only)
 (defun werkor-find-corresponding-file ()
         "Find the file that corresponds the this one."
         (interactive)
@@ -194,31 +192,32 @@
         (find-file-other-window buffer-file-name)
         (werkor-find-corresponding-file)
         (other-window -1))
+
 (define-key c-mode-base-map (kbd "M-I") 'werkor-find-corresponding-file)
 (define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
-;compile mode stuff
+;;;compile mode stuff
 (defun compilation-line-hook ()
         (make-local-variable 'truncate lines)
         (setq truncate lines nil)
 )
 (add-hook 'compilation-mode-hook 'compilation-line-hook)
 
-;compile stuff
+;;;compile stuff-----------------------
 (setq werkor-makefile "build.sh")
 (when is-windows
         (setq werkor-makefile "build.bat")
 )
 
-(defun make-without-asking ()
-        "make the current build"
-        (interactive)
-        (if (werkor-find-project-directory) (compile werkor-makefile))
-        (other-window 1)
- (global-set-key (kbd "M-m") 'make-without-asking)     
-)
+;(defun make-without-asking ()
+;        "make the current build"
+;        (interactive)
+;        (if (werkor-find-project-directory) (compile werkor-makefile))
+;        (other-window 1)
+; (global-set-key (kbd "M-m") 'make-without-asking)     
+;)
 
-;project directory stuff
+;;;project directory stuff---------------------------
 (setq compilation-directory-locked nil)
 
 (defun werkor-find-project-directory-recursive ()
@@ -252,7 +251,7 @@
         (werkor-find-project-directory-recursive)
         (setq last-compilation-directory default-directory)))
 
-;post-loading settings
+;;;post-loading settings
 (defun post-load-stuff ()
         (interactive)
         (split-window-right)
@@ -262,29 +261,31 @@
 (add-hook'window-setup-hook 'post-load-stuff t)
 
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; end functions;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;Modal-mode-----------------------------------------------------
 (defvar werkor-modal-mode-map (make-sparse-keymap)
   "keymap for modal mode.")
 
-;;bindings go here
+;;;bindings go here
 (define-key werkor-modal-mode-map (kbd "n") 'next-line)
 (define-key werkor-modal-mode-map (kbd "p") 'previous-line)
 (define-key werkor-modal-mode-map (kbd "f") 'forward-char)
 (define-key werkor-modal-mode-map (kbd "b") 'backward-char)
-(define-key werkor-modal-mode-map (kbd "a") 'yank)
-(define-key werkor-modal-mode-map (kbd "s") 'save-some-buffers)
+(define-key werkor-modal-mode-map (kbd "e") 'end-of-line)
+(define-key werkor-modal-mode-map (kbd "a") 'beginning-of-line)
+(define-key werkor-modal-mode-map (kbd "d") 'forward-word)
+(define-key werkor-modal-mode-map (kbd "q") 'backward-word)
+(define-key werkor-modal-mode-map (kbd "w") 'yank)
+(define-key werkor-modal-mode-map (kbd "RET") 'save-some-buffers)
 (define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
-(define-key werkor-modal-mode-map (kbd "i") 'isearch-forward)
+(define-key werkor-modal-mode-map (kbd "s") 'isearch-forward)
 (define-key werkor-modal-mode-map (kbd "o") 'query-replace)
 (define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
 (define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
-
+(define-key werkor-modal-mode-map (kbd "m") 'compile)
+(define-key werkor-modal-mode-map (kbd "z") 'undo)
+(define-key werkor-modal-mode-map (kbd "x") 'redo)
+(define-key werkor-modal-mode-map (kbd ".") 'imenu)
+(define-key werkor-modal-mode-map (kbd "l") 'werkor-add-comment)
 
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
