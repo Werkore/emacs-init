@@ -16,7 +16,7 @@
 (when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
   (setq w32-use-visible-system-caret nil))
 
-(when is-linux (add-to-list 'default-fram-alist '(font . ""))
+;(when is-linux (add-to-list 'default-fram-alist '(font . ""))
 
 ;;;disable the bell
 (setq ring-bell-function 'ignore)
@@ -66,10 +66,10 @@
 
 ;;;mics packages
 (require 'ido)
-(require 'ido-complete)
 (require 'cc-mode)
 (require 'compile)
 (ido-mode t)
+(setq ido-everwhere t)
 (require 'project)
 
 ;;;project markers for root
