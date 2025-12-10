@@ -40,7 +40,7 @@
 (scroll-bar-mode 0)
 
 ;;;load theme
-(load-theme 'werkor t)
+;(load-theme 'werkor t)
 
 ;;;show paren-mode
 (show-paren-mode 1)
@@ -97,7 +97,7 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
 (global-set-key (kbd "M-m") 'recompile)
-(global-set-key (kbd "M-c") 'werkor-add-comment)
+;(global-set-key (kbd "M-c") 'werkor-add-comment)
 
 ;;;functions--------------------------------------------
 
@@ -251,15 +251,6 @@
         (werkor-find-project-directory-recursive)
         (setq last-compilation-directory default-directory)))
 
-;;;post-loading settings
-(defun post-load-stuff ()
-        (interactive)
-        (split-window-right)
-        (setq split-height-threshold nil)
-        (setq split-width-threshold 0)
-)
-(add-hook'window-setup-hook 'post-load-stuff t)
-
 
 ;;;Modal-mode-----------------------------------------------------
 (defvar werkor-modal-mode-map (make-sparse-keymap)
@@ -270,22 +261,22 @@
 (define-key werkor-modal-mode-map (kbd "p") 'previous-line)
 (define-key werkor-modal-mode-map (kbd "f") 'forward-char)
 (define-key werkor-modal-mode-map (kbd "b") 'backward-char)
-(define-key werkor-modal-mode-map (kbd "e") 'end-of-line)
-(define-key werkor-modal-mode-map (kbd "a") 'beginning-of-line)
+(define-key werkor-modal-mode-map (kbd "e") 'forward-sentence)
+(define-key werkor-modal-mode-map (kbd "a") 'backward-sentence)
 (define-key werkor-modal-mode-map (kbd "d") 'forward-word)
 (define-key werkor-modal-mode-map (kbd "q") 'backward-word)
 (define-key werkor-modal-mode-map (kbd "w") 'yank)
 (define-key werkor-modal-mode-map (kbd "RET") 'save-some-buffers)
 (define-key werkor-modal-mode-map (kbd "M-e") 'other-window)
-(define-key werkor-modal-mode-map (kbd "s") 'isearch-forward)
-(define-key werkor-modal-mode-map (kbd "o") 'query-replace)
-(define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
-(define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
+;(define-key werkor-modal-mode-map (kbd "s") 'isearch-forward)
+;(define-key werkor-modal-mode-map (kbd "o") 'query-replace)
+;(define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
+;(define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
 (define-key werkor-modal-mode-map (kbd "m") 'compile)
 (define-key werkor-modal-mode-map (kbd "z") 'undo)
 (define-key werkor-modal-mode-map (kbd "x") 'redo)
-(define-key werkor-modal-mode-map (kbd ".") 'imenu)
-(define-key werkor-modal-mode-map (kbd "l") 'werkor-add-comment)
+;(define-key werkor-modal-mode-map (kbd ".") 'imenu)
+;(define-key werkor-modal-mode-map (kbd "l") 'werkor-add-comment)
 
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
@@ -341,6 +332,9 @@
 (set-face-attribute 'font-lock-type-face nil :foreground "burlywood3")
 (set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
 (set-face-attribute 'hl-line nil :inherit nil :background "#191970")
+(set-foreground-color "burlywood3")
+(set-cursor-color "#40FF40")
+(set-background-color "#161616")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
