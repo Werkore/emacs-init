@@ -75,8 +75,7 @@
 ;;;project markers for root
 (setq project-vc-extra-root-markers '("build.sh" "build.bat" ".project.el"))
 
-;;;keybinds
-
+;;;keybinds-------------------------------------------------------------
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
 (global-set-key (kbd "C-e") 'other-window)
 (global-set-key (kbd "M-f") 'find-file)
@@ -98,11 +97,11 @@
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
 (global-set-key (kbd "M-m") 'recompile)
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
-
+(global-set-key (kbd "C-x e") 'dired-other-window)
 ;;;functions--------------------------------------------
 
-;;;add Comment--------------------------------
 
+;;;add Comment--------------------------------
 (defun werkor-add-comment ()
   "insert a divider comment at the cursor"
   (interactive)
