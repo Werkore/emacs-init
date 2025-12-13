@@ -206,8 +206,16 @@
 ;;;compile stuff-----------------------
 (setq werkor-makefile "build.sh")
 (when is-windows
-        (setq werkor-makefile "build.bat")
+        (setq werkor-makefile ".\build.bat")
 )
+
+;;;project-compile-------------------------------
+(defun werkor-project-compile ()
+  (interactive)
+  (project-compile werkor-makefile))
+
+
+
 
 ;(defun make-without-asking ()
 ;        "make the current build"
