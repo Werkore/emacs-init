@@ -95,9 +95,10 @@
 (global-set-key [escape] nil)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
-(global-set-key (kbd "M-m") 'recompile)
+(global-set-key (kbd "M-m") 'compile)
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
-(global-set-key (kbd "C-x e") 'dired-other-window)
+(global-set-key (kbd "C-x e") 'dired-jump-other-window)
+(global-set-key (kbd "C-x d") 'dired-jump)
 ;;;functions--------------------------------------------
 
 
