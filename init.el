@@ -18,6 +18,9 @@
 
 ;(when is-linux (add-to-list 'default-fram-alist '(font . ""))
 
+;;;disable commands prompting
+(setq compilation-read-command nil)
+
 ;;;disable the bell
 (setq ring-bell-function 'ignore)
 
@@ -212,7 +215,7 @@
 ;;;project-compile-------------------------------
 (defun werkor-project-compile ()
   (interactive)
-  (project-compile werkor-makefile))
+  (project-compile))
 
 
 
