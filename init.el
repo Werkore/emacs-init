@@ -95,7 +95,7 @@
 (global-set-key [escape] nil)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
-(global-set-key (kbd "M-m") 'compile)
+(global-set-key (kbd "M-m") 'project-compile)
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
 (global-set-key (kbd "C-x e") 'dired-jump-other-window)
 (global-set-key (kbd "C-x d") 'dired-jump)
@@ -197,11 +197,11 @@
 (define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
 ;;;compile mode stuff
-(defun compilation-line-hook ()
-        (make-local-variable 'truncate lines)
-        (setq truncate lines nil)
-)
-(add-hook 'compilation-mode-hook 'compilation-line-hook)
+;(defun compilation-line-hook ()
+;        (make-local-variable 'truncate lines)
+;        (setq truncate lines nil)
+;)
+;(add-hook 'compilation-mode-hook 'compilation-line-hook)
 
 ;;;compile stuff-----------------------
 (setq werkor-makefile "build.sh")
