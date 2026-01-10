@@ -75,8 +75,15 @@
 (setq ido-everwhere t)
 (require 'project)
 
+;;;compile stuff-----------------------
+(setq werkor-makefile "build.sh")
+(when is-windows
+        (setq werkor-makefile "build.bat")
+)
+
+
 ;;;project markers for root
-(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".project.el"))
+(setq project-vc-extra-root-markers '(werkor-makefile ".project.el"))
 
 ;;;keybinds-------------------------------------------------------------
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
@@ -207,10 +214,10 @@
 ;(add-hook 'compilation-mode-hook 'compilation-line-hook)
 
 ;;;compile stuff-----------------------
-(setq werkor-makefile "build.sh")
-(when is-windows
-        (setq werkor-makefile ".\build.bat")
-)
+;;(setq werkor-makefile "build.sh")
+;;(when is-windows
+;;        (setq werkor-makefile "build.bat")
+;;)
 
 ;;;project-compile-------------------------------
 (defun werkor-project-compile ()
