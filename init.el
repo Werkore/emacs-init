@@ -76,6 +76,7 @@
 (require 'project)
 
 ;;;compile stuff-----------------------
+(defvar werkor-makefile "build.sh")
 (setq werkor-makefile "build.sh")
 (when is-windows
         (setq werkor-makefile "build.bat")
@@ -83,7 +84,7 @@
 
 
 ;;;project markers for root
-(setq project-vc-extra-root-markers '(werkor-makefile ".project.el"))
+(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".project.el"))
 
 ;;;keybinds-------------------------------------------------------------
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
