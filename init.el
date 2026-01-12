@@ -75,16 +75,8 @@
 (setq ido-everwhere t)
 (require 'project)
 
-;;;compile stuff-----------------------
-(defvar werkor-makefile "build.sh")
-(setq werkor-makefile "build.sh")
-(when is-windows
-        (setq werkor-makefile "build.bat")
-)
-
-
 ;;;project markers for root
-(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".project.el"))
+;(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".dir-locals.el"))
 
 ;;;keybinds-------------------------------------------------------------
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
@@ -111,6 +103,17 @@
 (global-set-key (kbd "C-x e") 'dired-jump-other-window)
 (global-set-key (kbd "C-x d") 'dired-jump)
 ;;;functions--------------------------------------------
+
+;;;create project dir-local file-----------------------
+(defun werkor-create-dir-locals ()
+  "create a .dir-locals.el file with build commands in current directory"
+  (interactive)
+  (with-temp-file ".dir-locals.el"
+    (insert "((nil . ((eval . (if (eq system-type 'windows-nt)
+                                 (setq compile-command . \"build.bat\")
+                                 (setq compile-command . \"build.sh\"))))))"))
+  (message "created .dir-locals.el"))
+  
 
 
 ;;;add Comment--------------------------------
@@ -215,10 +218,10 @@
 ;(add-hook 'compilation-mode-hook 'compilation-line-hook)
 
 ;;;compile stuff-----------------------
-;;(setq werkor-makefile "build.sh")
-;;(when is-windows
-;;        (setq werkor-makefile "build.bat")
-;;)
+(setq werkor-makefile "build.sh")
+(when is-windows
+        (setq werkor-makefile ".\build.bat")
+)
 
 ;;;project-compile-------------------------------
 (defun werkor-project-compile ()
