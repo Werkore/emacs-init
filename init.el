@@ -76,7 +76,7 @@
 (require 'project)
 
 ;;;project markers for root
-;(setq project-vc-extra-root-markers '("build.sh" "build.bat" ".dir-locals.el"))
+(setq project-vc-extra-root-markers '(".dir-locals.el"))
 
 ;;;keybinds-------------------------------------------------------------
 ;TODO(werkor):Bind(s?) are breaking M-x so figure out which one(s).
@@ -109,9 +109,15 @@
   "create a .dir-locals.el file with build commands in current directory"
   (interactive)
   (with-temp-file ".dir-locals.el"
-    (insert "((nil . ((eval . (if (eq system-type 'windows-nt)
-                                 (setq compile-command . \"build.bat\")
-                                 (setq compile-command . \"build.sh\"))))))"))
+    (insert "((nil . ((eval . (cond
+                   ((eq system-type 'windows-nt)
+                    (setq-local compile-command \"build.bat\"))
+                   ((eq system-type 'darwin)
+                    (setq-local compile-command \"./build.sh\"))
+                   ((eq system-type 'gnu/linux)
+                    (setq-local compile-command \"./build.sh\"))
+                   (t
+                    (setq-local compile-command nil)))))))"))
   (message "created .dir-locals.el"))
   
 
