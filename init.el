@@ -353,6 +353,7 @@
 (set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
 (set-face-attribute 'font-lock-comment-face nil :foreground "gray50")
 (set-face-attribute 'font-lock-constant-face nil :foreground "olive drab")
+;;;(set-face-attribute 'font-lock-number-face nil :foreground "#ab82ff") ;figure out how to highlight numbers
 (set-face-attribute 'font-lock-doc-face nil :foreground "gray50")
 (set-face-attribute 'font-lock-function-name-face nil :foreground "burlywood3")
 (set-face-attribute 'font-lock-keyword-face nil :foreground "DarkGoldenrod3")
