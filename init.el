@@ -313,7 +313,7 @@
   :global t
   (if werkor-modal-mode
       (set-face-attribute 'cursor nil :background "red")
-    (set-face-attribute 'cursor nil :background "green")))
+    (set-face-attribute 'cursor nil :background "#40FF40")))
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
 ;(add-hook 'prog-mode-hook 'werkor-modal-mode)
