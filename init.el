@@ -100,8 +100,8 @@
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
 (global-set-key (kbd "M-m") 'project-compile)
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
-(global-set-key (kbd "C-x C-e") 'dired-jump-other-window)
-(global-set-key (kbd "C-x C-d") 'dired-jump)
+(global-set-key (kbd "C-x e") 'dired-jump-other-window)
+(global-set-key (kbd "C-x d") 'dired-jump)
 ;;;functions--------------------------------------------
 
 ;;;create project dir-local file-----------------------
@@ -313,7 +313,7 @@
   :global t
   (if werkor-modal-mode
       (set-face-attribute 'cursor nil :background "red")
-    (set-face-attribute 'cursor nil :background "#40FF40")))
+    (set-face-attribute 'cursor nil :background "green")))
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
 ;(add-hook 'prog-mode-hook 'werkor-modal-mode)
