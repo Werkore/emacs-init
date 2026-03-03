@@ -92,8 +92,8 @@
 (global-set-key (kbd "M-F") 'find-file-other-window)
 (global-set-key (kbd "M-b") 'ido-switch-buffer)
 (global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
-;(global-set-key (kbd "M-n") 'next-error)
-;(global-set-key (kbd "M-p") 'previous-error)
+(global-set-key (kbd "M-n") 'next-error)
+(global-set-key (kbd "M-p") 'previous-error)
 (global-set-key (kbd "C-.") 'imenu)
 (global-set-key (kbd "C-<") 'start-kbd-macro)
 (global-set-key (kbd "C->") 'end-kbd-macro)
@@ -112,6 +112,7 @@
 (global-set-key (kbd "C-<return>") 'werkor-end-of-line-and-new-line)
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
 (global-set-key (kbd "S-<return>") 'save-some-buffers)
+
 
 		
 ;;;functions--------------------------------------------
