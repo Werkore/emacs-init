@@ -53,7 +53,7 @@
 
 ;;;the delay is in seconds
 (setq which-key-idle-delay 2) 
-(which-key-mode 1)
+(which-key-mode)
 
 ;;;window options-----------------------------------------
 (setq next-line-asj-newlines nil)
@@ -111,14 +111,14 @@
 (global-set-key (kbd "C-x C-d") 'dired-jump)
 (global-set-key (kbd "C-<return>") 'werkor-end-of-line-and-new-line)
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
-(global-set-key (lbd "S-<return>" 'save-some-buffers)
+(global-set-key (kbd "S-<return>") 'save-some-buffers)
 
 		
 ;;;functions--------------------------------------------
 
 ;;;end of line and new line
 (defun werkor-end-of-line-and-new-line ()
-    "adds a new line below cursor"
+  "adds a new line below cursor"
   (interactive)
   (end-of-line)
   (newline-and-indent))
@@ -230,6 +230,7 @@
         (if CorrespondingFileName (find-file CorrespondingFileName)
                 (error "Unable to find a corresponding file")))
 
+
 (defun werkor-find-corresponding-file-other-window ()
         "Find the file that corresponds to this one.(other window)"
         (interactive)
@@ -327,7 +328,7 @@
 ;(define-key werkor-modal-mode-map (kbd "o") 'query-replace)
 ;(define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
 ;(define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
-(define-key werkor-modal-mode-map (kbd "m") 'compile)
+(define-key werkor-modal-mode-map (kbd "m") 'project-compile)
 (define-key werkor-modal-mode-map (kbd "z") 'undo)
 (define-key werkor-modal-mode-map (kbd "x") 'redo)
 ;(define-key werkor-modal-mode-map (kbd ".") 'imenu)
