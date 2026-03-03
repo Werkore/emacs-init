@@ -1,55 +1,61 @@
-;;;undo buffer limit
+;;;undo buffer limit--------------------------------
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
-;;;make cursor a box
+;;;make cursor a box-------------------------------
 (setq cursor-type 'box)
 
-;;;make cursor on windows be a block 
+;;;make cursor on windows be a block-------------- 
 ;(setq w32-use-visible-system-caret nil)
 
-;;;determine underlying OS
+;;;determine underlying OS------------------------
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
 
-;;;change font
-(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-  (setq w32-use-visible-system-caret nil))
+;;;change font---------------------------------------------------------------------
+;;;(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+;;;  (setq w32-use-visible-system-caret nil))
 
 ;(when is-linux (add-to-list 'default-fram-alist '(font . ""))
 
-;;;disable commands prompting
+;;;disable commands prompting----------------------------------
 (setq compilation-read-command nil)
 
-;;;disable the bell
+;;;disable the bell---------------------------------
 (setq ring-bell-function 'ignore)
 
-;;;smooth scroll
+;;;smooth scroll-----------------------------
 (setq scroll-step 3)
 
-;;;set global hl line mode
+;;;set global hl line mode---------------------------
 (global-hl-line-mode 1)
 
-;;;menu bar mode
+;;;menu bar mode---------------------------------
 (menu-bar-mode 0)
 
-;;;grep command
+;;;grep command--------------------------------------
 (setq grep-command "rgrep -nH") 
 
-;;;tool bar mode
+;;;tool bar mode-------------------------------------
 (tool-bar-mode 0)
 
-;;;scroll bar mode
+;;;scroll bar mode-----------------------------------
 (scroll-bar-mode 0)
 
-;;;load theme
+;;;load theme------------------------------------------
 ;(load-theme 'werkor t)
 
-;;;show paren-mode
+;;;show paren-mode-------------------------------------
 (show-paren-mode 1)
 ;(setq show-paren-style 'parenthesis)
 
-;;;window options
+;;;which-key mode-----------------------------------------
+
+;;;the delay is in seconds
+(setq which-key-idle-delay 2) 
+(which-key-mode 1)
+
+;;;window options-----------------------------------------
 (setq next-line-asj-newlines nil)
 (setq-default truncate-lines nil)
 (setq truncate-partial-width-windows nil)
@@ -57,25 +63,26 @@
 (setq split-width-threshold 0)
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
-;;;line numbers
+;;;line numbers--------------------------------------------
 (global-display-line-numbers-mode 1)
 
-;;;line wrapping
+;;;line wrapping--------------------------------------------
 ;(global-visual-line-mode 1)
 ;(setq word-wrap t)
 ;(add-hook 'text-mode-hook #'refill-mode)
 ;(add-hook 'prog-mode-hook #'refill-mode)
 ;(setq-default fill-column 60) 
 
-;;;mics packages
+;;;mics packages----------------------------------------------
 (require 'ido)
 (require 'cc-mode)
 (require 'compile)
 (ido-mode t)
 (setq ido-everwhere t)
 (require 'project)
+;;;(require 'which-key)
 
-;;;project markers for root
+;;;project markers for root directory------------------------------------------
 (setq project-vc-extra-root-markers '(".dir-locals.el"))
 
 ;;;keybinds-------------------------------------------------------------
@@ -100,11 +107,28 @@
 ;(global-set-key (kbd "<tab>") 'indent-for-tab-command)
 (global-set-key (kbd "M-m") 'project-compile)
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
-(global-set-key (kbd "C-x e") 'dired-jump-other-window)
-(global-set-key (kbd "C-x d") 'dired-jump)
+(global-set-key (kbd "C-x C-e") 'dired-jump-other-window)
+(global-set-key (kbd "C-x C-d") 'dired-jump)
+(global-set-key (kbd "C-<return>") 'werkor-end-of-line-and-new-line)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+(global-set-key (lbd "S-<return>" 'save-some-buffers)
+
+		
 ;;;functions--------------------------------------------
 
-;;;create project dir-local file-----------------------
+;;;end of line and new line
+(defun werkor-end-of-line-and-new-line ()
+    "adds a new line below cursor"
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
+
+
+;;;TODO(werkor) create a build.sh/bat function and maybe a whole project one
+;;; that combines the .dir.local.el one with the build one maybe
+
+
+;;;create project dir-local file-----------------------------------------------
 (defun werkor-create-dir-locals ()
   "create a .dir-locals.el file with build commands in current directory"
   (interactive)
@@ -122,7 +146,7 @@
   
 
 
-;;;add Comment--------------------------------
+;;;add Comment-------------------------------------------------------------
 (defun werkor-add-comment ()
   "insert a divider comment at the cursor"
   (interactive)
@@ -131,7 +155,7 @@
   (insert comment-end)
   (backward-whitespace))
 
-;;;replace-in-region
+;;;replace-in-region-----------------------------------------------------------------
 (defun wekor-replace-in-region (old-word new-word)
         "Perform a replace-string in the current region"
         (interactive "sReplace: \nsReplace : %s With: ")
@@ -176,7 +200,7 @@
 (global-set-key (kbd "C-;") 'exchange-point-and-mark)
 
 
-;;;save buffer function
+;;;save buffer function-----------------------------------------
 (defun werkor-save-buffer ()
         "Save the buffer after untabifying it."
         (interactive)
@@ -186,7 +210,7 @@
                         (untabify (point-min) (point-max))))
         (save-buffer))
 
-;;;find headerfile (c style only)
+;;;find headerfile (c style only)------------------------------------
 (defun werkor-find-corresponding-file ()
         "Find the file that corresponds the this one."
         (interactive)
@@ -224,15 +248,18 @@
 ;(add-hook 'compilation-mode-hook 'compilation-line-hook)
 
 ;;;compile stuff-----------------------
-(setq werkor-makefile "build.sh")
-(when is-windows
-        (setq werkor-makefile ".\build.bat")
-)
+;;;(setq werkor-makefile "build.sh")
+;;;(when is-windows
+;;;        (setq werkor-makefile ".\build.bat")
+;;;)
 
 ;;;project-compile-------------------------------
 (defun werkor-project-compile ()
+  "take arguemts and compile the build script"
   (interactive)
-  (project-compile))
+  (let ((arguments (read-string "Enter arguments: ")))
+    (concat werkor-makefile " " arguments))
+  (compile werkor-makefile))
 
 
 
