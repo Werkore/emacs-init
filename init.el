@@ -148,19 +148,8 @@
                     (setq-local compile-command nil)))))))"))
   (message "created .dir-locals.el"))
   
-
-
-;;;add Comment-------------------------------------------------------------
-(defun werkor-add-comment ()
-  "insert a divider comment at the cursor"
-  (interactive)
-  (insert comment-start)
-  (insert " -----------------------------------------------------------")
-  (insert comment-end)
-  (backward-whitespace))
-
 ;;;replace-in-region-----------------------------------------------------------------
-(defun wekor-replace-in-region (old-word new-word)
+(defun werkor-replace-in-region (old-word new-word)
         "Perform a replace-string in the current region"
         (interactive "sReplace: \nsReplace : %s With: ")
         (save-excursion (save-restriction
@@ -245,73 +234,6 @@
 (define-key c-mode-base-map (kbd "M-I") 'werkor-find-corresponding-file)
 (define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
-;;;compile mode stuff
-;(defun compilation-line-hook ()
-;        (make-local-variable 'truncate lines)
-;        (setq truncate lines nil)
-;)
-;(add-hook 'compilation-mode-hook 'compilation-line-hook)
-
-;;;compile stuff-----------------------
-;;;(setq werkor-makefile "build.sh")
-;;;(when is-windows
-;;;        (setq werkor-makefile ".\build.bat")
-;;;)
-
-;;;project-compile-------------------------------
-(defun werkor-project-compile ()
-  "take arguemts and compile the build script"
-  (interactive)
-  (let ((arguments (read-string "Enter arguments: ")))
-    (concat werkor-makefile " " arguments))
-  (compile werkor-makefile))
-
-
-
-
-;(defun make-without-asking ()
-;        "make the current build"
-;        (interactive)
-;        (if (werkor-find-project-directory) (compile werkor-makefile))
-;        (other-window 1)
-; (global-set-key (kbd "M-m") 'make-without-asking)     
-;)
-
-;;;project directory stuff---------------------------
-(setq compilation-directory-locked nil)
-
-(defun werkor-find-project-directory-recursive ()
-        "recursively search for a makefile."
-        (interactive)
-        (if (file-exists-p werkor-makefile) t
-                (cd "../")
-                (setq my-current-directory default-directory)
-                (message "The Current working directory is: %s" default-directory)
-                (werkor-find-project-directory-reursive)))
-
-(defun lock-compilation-directory ()
-        "the compilation process should NOT look for a makefile"
-        (interactive)
-        (setq compilation-directory-locked t)
-        (message "Compilation directory is locked"))
-
-(defun unlock-compilation-directory ()
-        (interactive)
-        (setq compilation-directory-locked nil)
-        (message "Compilation directory is roaming"))
-
-
-(defun werkor-find-project-directory ()
-        "find the project directory"
-        (interactive)
-        (setq werkor-find-project-from-directory default directory)
-        (switch-to-buffer-other-window "*compilation*")
-        (if compilation-directory-locked (cd last-compilation-directory)
-        (cd find-project-from-directory)
-        (werkor-find-project-directory-recursive)
-        (setq last-compilation-directory default-directory)))
-
-
 ;;;Modal-mode-----------------------------------------------------
 (defvar werkor-modal-mode-map (make-sparse-keymap)
   "keymap for modal mode.")
@@ -347,22 +269,42 @@
   :global t
   (if werkor-modal-mode
       (set-face-attribute 'cursor nil :background "red")
-    (set-face-attribute 'cursor nil :background "green")))
+    (set-face-attribute 'cursor nil :background "#40FF40")))
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
 
-;;; Hooke to diable wekor-modal-mode wehen leaving text/code buffer or entering minibuffer
-(defun my-disable-minor-mode-maybe ()
-  "Disable your-minor-mode in the minibuffer or when leaving relevant modes."
-  (when (or (derived-mode-p 'prog-mode)
-            (derived-mode-p 'text-mode)
-            (active-minibuffer-window))
-    (your-minor-mode -1)))
+;;;TODO: find a way to make werkor-modal-mode be disabled when entering the minibuffer
+;;; i got it to work when leaving for the minibuffer or non prog/text mode hooks but
+;;; not for restoring it when it returns
 
-;; Add to both hooks
-(add-hook 'change-major-mode-hook 'my-disable-minor-mode-maybe)
-(add-hook 'minibuffer-setup-hook 'my-disable-minor-mode-maybe)
+;;; Hooks to manage werkor-modal-mode
+(defvar my-mode-was-active nil
+  "Variable to store whether the minor mode was active.")
 
+(defun my-minibuffer-disable-mode ()
+  "Disable minor mode when entering the minibuffer."
+  ;; Save the state of the mode
+  (setq-local my-mode-was-active (and (boundp 'werkor-modal-mode) werkor-modal-mode))
+  ;; Disable the mode if it was active
+  (when my-mode-was-active
+    (werkor-modal-mode -1)))
+
+(defun my-minibuffer-restore-mode ()
+  "Restore minor mode when exiting the minibuffer."
+  ;; Re-enable the mode if it was active before
+  (when my-mode-was-active
+    (werkor-modal-mode 1)))
+
+(defun my-toggle-werkor-modal-mode-maybe ()
+  "Disable minor-mode if not in prog-mode or text-mode."
+  (unless (or (derived-mode-p 'prog-mode)
+              (derived-mode-p 'text-mode))
+    (werkor-modal-mode -1)))
+
+;; Add to hooks
+(add-hook 'buffer-list-update-hook #'my-toggle-werkor-modal-mode-maybe)
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-disable-mode)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-restore-mode)
 
 ;;;highlights-----------------------------------------------------------
 (defface my-todo-face
