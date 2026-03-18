@@ -67,6 +67,9 @@
 (global-display-line-numbers-mode 1)
 
 ;;;line wrapping--------------------------------------------
+(global-visual-line-mode t)
+(global-visual-wrap-prefix-mode t)
+
 ;(global-visual-line-mode 1)
 ;(setq word-wrap t)
 ;(add-hook 'text-mode-hook #'refill-mode)
@@ -335,6 +338,8 @@
 ;(define-key werkor-modal-mode-map (kbd ".") 'imenu)
 ;(define-key werkor-modal-mode-map (kbd "l") 'werkor-add-comment)
 
+
+
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
   :lighter " [MODAL]"
@@ -345,9 +350,6 @@
     (set-face-attribute 'cursor nil :background "green")))
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
-;(add-hook 'prog-mode-hook 'werkor-modal-mode)
-;(add-hook 'text-mode-hook 'werkor-modal-mode)
-
 
 ;;;highlights-----------------------------------------------------------
 (defface my-todo-face
@@ -407,11 +409,20 @@
      "79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0"
      "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558"
      default))
- '(package-selected-packages nil))
+ '(package-selected-packages nil)
+ '(safe-local-variable-values
+   '((eval cond
+	   ((eq system-type 'windows-nt)
+	    (setq-local compile-command "build.bat"))
+	   ((eq system-type 'darwin)
+	    (setq-local compile-command "./build.sh"))
+	   ((eq system-type 'gnu/linux)
+	    (setq-local compile-command "./build.sh"))
+	   (t (setq-local compile-command nil))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
  
