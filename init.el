@@ -351,6 +351,19 @@
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
 
+;;; Hooke to diable wekor-modal-mode wehen leaving text/code buffer or entering minibuffer
+(defun my-disable-minor-mode-maybe ()
+  "Disable your-minor-mode in the minibuffer or when leaving relevant modes."
+  (when (or (derived-mode-p 'prog-mode)
+            (derived-mode-p 'text-mode)
+            (active-minibuffer-window))
+    (your-minor-mode -1)))
+
+;; Add to both hooks
+(add-hook 'change-major-mode-hook 'my-disable-minor-mode-maybe)
+(add-hook 'minibuffer-setup-hook 'my-disable-minor-mode-maybe)
+
+
 ;;;highlights-----------------------------------------------------------
 (defface my-todo-face
   '((t (:foreground "red" :weight bold)))
