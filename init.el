@@ -1,61 +1,62 @@
-;;;undo buffer limit--------------------------------
+;;;undo buffer limit
 (setq undo-limit 40000000000)
 (setq undo-strong-limit 400000000)
 
-;;;make cursor a box-------------------------------
+;;;make cursor a box
 (setq cursor-type 'box)
 
-;;;make cursor on windows be a block-------------- 
+;;;make cursor on windows be a block 
 ;(setq w32-use-visible-system-caret nil)
 
-;;;determine underlying OS------------------------
+;;;determine underlying OS
 (setq is-linux (equal system-type 'gnu/Linux))
 (setq is-windows (equal system-type 'windows-nt))
 
-;;;change font---------------------------------------------------------------------
-;;;(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-;;;  (setq w32-use-visible-system-caret nil))
+;;;change font
+(when is-windows (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+  (setq w32-use-visible-system-caret nil))
 
 ;(when is-linux (add-to-list 'default-fram-alist '(font . ""))
 
-;;;disable commands prompting----------------------------------
+;;;disable commands prompting
 (setq compilation-read-command nil)
 
-;;;disable the bell---------------------------------
+;;;disable the bell
 (setq ring-bell-function 'ignore)
 
-;;;smooth scroll-----------------------------
+;;;smooth scroll
 (setq scroll-step 3)
 
-;;;set global hl line mode---------------------------
+;;;set global hl line mode
 (global-hl-line-mode 1)
 
-;;;menu bar mode---------------------------------
+;;;menu bar mode
 (menu-bar-mode 0)
 
-;;;grep command--------------------------------------
-(setq grep-command "rgrep -nH") 
+;;;grep command
+(setq grep-command "grep -nH") 
 
-;;;tool bar mode-------------------------------------
+;;;tool bar mode
 (tool-bar-mode 0)
 
-;;;scroll bar mode-----------------------------------
+;;;remove top bar decoration
+(add-to-list 'default-frame-alist '(undecorated . t))
+
+;;;scroll bar mode
 (scroll-bar-mode 0)
 
-;;;load theme------------------------------------------
+;;;auto-save buffers
+(setq auto-save-visited-interval 1)
+(auto-save-visited-mode 1)
+
+;;;load theme
 ;(load-theme 'werkor t)
 
-;;;show paren-mode-------------------------------------
+;;;show paren-mode
 (show-paren-mode 1)
 ;(setq show-paren-style 'parenthesis)
 
-;;;which-key mode-----------------------------------------
-
-;;;the delay is in seconds
-(setq which-key-idle-delay 2) 
-(which-key-mode)
-
-;;;window options-----------------------------------------
+;;;window options
 (setq next-line-asj-newlines nil)
 (setq-default truncate-lines nil)
 (setq truncate-partial-width-windows nil)
@@ -63,29 +64,25 @@
 (setq split-width-threshold 0)
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
-;;;line numbers--------------------------------------------
+;;;line numbers
 (global-display-line-numbers-mode 1)
 
-;;;line wrapping--------------------------------------------
-(global-visual-line-mode t)
-(global-visual-wrap-prefix-mode t)
-
+;;;line wrapping
 ;(global-visual-line-mode 1)
 ;(setq word-wrap t)
 ;(add-hook 'text-mode-hook #'refill-mode)
 ;(add-hook 'prog-mode-hook #'refill-mode)
 ;(setq-default fill-column 60) 
 
-;;;mics packages----------------------------------------------
+;;;mics packages
 (require 'ido)
 (require 'cc-mode)
 (require 'compile)
-(ido-mode t)
+(fido-vertical-mode t)
 (setq ido-everwhere t)
 (require 'project)
-;;;(require 'which-key)
 
-;;;project markers for root directory------------------------------------------
+;;;project markers for root
 (setq project-vc-extra-root-markers '(".dir-locals.el"))
 
 ;;;keybinds-------------------------------------------------------------
@@ -95,8 +92,8 @@
 (global-set-key (kbd "M-F") 'find-file-other-window)
 (global-set-key (kbd "M-b") 'ido-switch-buffer)
 (global-set-key (kbd "M-B") 'ido-switch-buffer-other-window)
-(global-set-key (kbd "M-n") 'next-error)
-(global-set-key (kbd "M-p") 'previous-error)
+;(global-set-key (kbd "M-n") 'next-error)
+;(global-set-key (kbd "M-p") 'previous-error)
 (global-set-key (kbd "C-.") 'imenu)
 (global-set-key (kbd "C-<") 'start-kbd-macro)
 (global-set-key (kbd "C->") 'end-kbd-macro)
@@ -112,27 +109,9 @@
 ;(global-set-key (kbd "M-c") 'werkor-add-comment)
 (global-set-key (kbd "C-x C-e") 'dired-jump-other-window)
 (global-set-key (kbd "C-x C-d") 'dired-jump)
-(global-set-key (kbd "C-<return>") 'werkor-end-of-line-and-new-line)
-(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
-(global-set-key (kbd "S-<return>") 'save-some-buffers)
-
-
-		
 ;;;functions--------------------------------------------
 
-;;;end of line and new line
-(defun werkor-end-of-line-and-new-line ()
-  "adds a new line below cursor"
-  (interactive)
-  (end-of-line)
-  (newline-and-indent))
-
-
-;;;TODO(werkor) create a build.sh/bat function and maybe a whole project one
-;;; that combines the .dir.local.el one with the build one maybe
-
-
-;;;create project dir-local file-----------------------------------------------
+;;;create project dir-local file-----------------------
 (defun werkor-create-dir-locals ()
   "create a .dir-locals.el file with build commands in current directory"
   (interactive)
@@ -148,8 +127,19 @@
                     (setq-local compile-command nil)))))))"))
   (message "created .dir-locals.el"))
   
-;;;replace-in-region-----------------------------------------------------------------
-(defun werkor-replace-in-region (old-word new-word)
+
+
+;;;add Comment--------------------------------
+(defun werkor-add-comment ()
+  "insert a divider comment at the cursor"
+  (interactive)
+  (insert comment-start)
+  (insert " -----------------------------------------------------------")
+  (insert comment-end)
+  (backward-whitespace))
+
+;;;replace-in-region
+(defun wekor-replace-in-region (old-word new-word)
         "Perform a replace-string in the current region"
         (interactive "sReplace: \nsReplace : %s With: ")
         (save-excursion (save-restriction
@@ -193,7 +183,7 @@
 (global-set-key (kbd "C-;") 'exchange-point-and-mark)
 
 
-;;;save buffer function-----------------------------------------
+;;;save buffer function
 (defun werkor-save-buffer ()
         "Save the buffer after untabifying it."
         (interactive)
@@ -203,7 +193,7 @@
                         (untabify (point-min) (point-max))))
         (save-buffer))
 
-;;;find headerfile (c style only)------------------------------------
+;;;find headerfile (c style only)
 (defun werkor-find-corresponding-file ()
         "Find the file that corresponds the this one."
         (interactive)
@@ -223,7 +213,6 @@
         (if CorrespondingFileName (find-file CorrespondingFileName)
                 (error "Unable to find a corresponding file")))
 
-
 (defun werkor-find-corresponding-file-other-window ()
         "Find the file that corresponds to this one.(other window)"
         (interactive)
@@ -234,15 +223,79 @@
 (define-key c-mode-base-map (kbd "M-I") 'werkor-find-corresponding-file)
 (define-key c-mode-base-map (kbd "M-i") 'werkor-find-corresponding-file-other-window)
 
+;;;compile mode stuff
+;(defun compilation-line-hook ()
+;        (make-local-variable 'truncate lines)
+;        (setq truncate lines nil)
+;)
+;(add-hook 'compilation-mode-hook 'compilation-line-hook)
+
+;;;compile stuff-----------------------
+(setq werkor-makefile "build.sh")
+(when is-windows
+        (setq werkor-makefile ".\build.bat")
+)
+
+;;;project-compile-------------------------------
+(defun werkor-project-compile ()
+  (interactive)
+  (project-compile))
+
+
+
+
+;(defun make-without-asking ()
+;        "make the current build"
+;        (interactive)
+;        (if (werkor-find-project-directory) (compile werkor-makefile))
+;        (other-window 1)
+; (global-set-key (kbd "M-m") 'make-without-asking)     
+;)
+
+;;;project directory stuff---------------------------
+(setq compilation-directory-locked nil)
+
+(defun werkor-find-project-directory-recursive ()
+        "recursively search for a makefile."
+        (interactive)
+        (if (file-exists-p werkor-makefile) t
+                (cd "../")
+                (setq my-current-directory default-directory)
+                (message "The Current working directory is: %s" default-directory)
+                (werkor-find-project-directory-reursive)))
+
+(defun lock-compilation-directory ()
+        "the compilation process should NOT look for a makefile"
+        (interactive)
+        (setq compilation-directory-locked t)
+        (message "Compilation directory is locked"))
+
+(defun unlock-compilation-directory ()
+        (interactive)
+        (setq compilation-directory-locked nil)
+        (message "Compilation directory is roaming"))
+
+
+(defun werkor-find-project-directory ()
+        "find the project directory"
+        (interactive)
+        (setq werkor-find-project-from-directory default directory)
+        (switch-to-buffer-other-window "*compilation*")
+        (if compilation-directory-locked (cd last-compilation-directory)
+        (cd find-project-from-directory)
+        (werkor-find-project-directory-recursive)
+        (setq last-compilation-directory default-directory)))
+
+
 ;;;Modal-mode-----------------------------------------------------
 (defvar werkor-modal-mode-map (make-sparse-keymap)
   "keymap for modal mode.")
 
 ;;;bindings go here
-(define-key werkor-modal-mode-map (kbd "n") 'next-line)
-(define-key werkor-modal-mode-map (kbd "p") 'previous-line)
-(define-key werkor-modal-mode-map (kbd "f") 'forward-char)
-(define-key werkor-modal-mode-map (kbd "b") 'backward-char)
+(define-key werkor-modal-mode-map (kbd "j") 'next-line)
+(define-key werkor-modal-mode-map (kbd "k") 'previous-line)
+(define-key werkor-modal-mode-map (kbd "l") 'forward-char)
+(define-key werkor-modal-mode-map (kbd "h") 'backward-char)
 (define-key werkor-modal-mode-map (kbd "e") 'forward-sentence)
 (define-key werkor-modal-mode-map (kbd "a") 'backward-sentence)
 (define-key werkor-modal-mode-map (kbd "d") 'forward-word)
@@ -254,13 +307,11 @@
 ;(define-key werkor-modal-mode-map (kbd "o") 'query-replace)
 ;(define-key werkor-modal-mode-map (kbd "v") 'project-find-regexp)
 ;(define-key werkor-modal-mode-map (kbd "c") 'project-query-replace-regexp)
-(define-key werkor-modal-mode-map (kbd "m") 'project-compile)
+(define-key werkor-modal-mode-map (kbd "m") 'compile)
 (define-key werkor-modal-mode-map (kbd "z") 'undo)
 (define-key werkor-modal-mode-map (kbd "x") 'redo)
 ;(define-key werkor-modal-mode-map (kbd ".") 'imenu)
 ;(define-key werkor-modal-mode-map (kbd "l") 'werkor-add-comment)
-
-
 
 (define-minor-mode werkor-modal-mode
   "werkore modal mode."
@@ -269,42 +320,12 @@
   :global t
   (if werkor-modal-mode
       (set-face-attribute 'cursor nil :background "red")
-    (set-face-attribute 'cursor nil :background "#40FF40")))
+    (set-face-attribute 'cursor nil :background "green")))
 
 (global-set-key (kbd "M-,") 'werkor-modal-mode)
+;(add-hook 'prog-mode-hook 'werkor-modal-mode)
+;(add-hook 'text-mode-hook 'werkor-modal-mode)
 
-;;;TODO: find a way to make werkor-modal-mode be disabled when entering the minibuffer
-;;; i got it to work when leaving for the minibuffer or non prog/text mode hooks but
-;;; not for restoring it when it returns
-
-;;; Hooks to manage werkor-modal-mode
-(defvar my-mode-was-active nil
-  "Variable to store whether the minor mode was active.")
-
-(defun my-minibuffer-disable-mode ()
-  "Disable minor mode when entering the minibuffer."
-  ;; Save the state of the mode
-  (setq-local my-mode-was-active (and (boundp 'werkor-modal-mode) werkor-modal-mode))
-  ;; Disable the mode if it was active
-  (when my-mode-was-active
-    (werkor-modal-mode -1)))
-
-(defun my-minibuffer-restore-mode ()
-  "Restore minor mode when exiting the minibuffer."
-  ;; Re-enable the mode if it was active before
-  (when my-mode-was-active
-    (werkor-modal-mode 1)))
-
-(defun my-toggle-werkor-modal-mode-maybe ()
-  "Disable minor-mode if not in prog-mode or text-mode."
-  (unless (or (derived-mode-p 'prog-mode)
-              (derived-mode-p 'text-mode))
-    (werkor-modal-mode -1)))
-
-;; Add to hooks
-(add-hook 'buffer-list-update-hook #'my-toggle-werkor-modal-mode-maybe)
-(add-hook 'minibuffer-setup-hook #'my-minibuffer-disable-mode)
-(add-hook 'minibuffer-exit-hook #'my-minibuffer-restore-mode)
 
 ;;;highlights-----------------------------------------------------------
 (defface my-todo-face
@@ -364,20 +385,11 @@
      "79aabf6cceedb08f569b45bfe4987b074c19c679cd93ea86c93708f667d455f0"
      "3d39093437469a0ae165c1813d454351b16e4534473f62bc6e3df41bb00ae558"
      default))
- '(package-selected-packages nil)
- '(safe-local-variable-values
-   '((eval cond
-	   ((eq system-type 'windows-nt)
-	    (setq-local compile-command "build.bat"))
-	   ((eq system-type 'darwin)
-	    (setq-local compile-command "./build.sh"))
-	   ((eq system-type 'gnu/linux)
-	    (setq-local compile-command "./build.sh"))
-	   (t (setq-local compile-command nil))))))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+)
  
